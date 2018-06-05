@@ -1,3 +1,9 @@
 .idea
 *.png
 handson-ml
+tensorflow/bazel-bin
+tensorflow/bazel-genfiles
+tensorflow/bazel-out
+tensorflow/bazel-tensorflow
+tensorflow/bazel-testlogs
+tensorflow/resources/

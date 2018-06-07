@@ -1,0 +1,25 @@
+apply plugin: 'java'
+apply plugin: 'application'
+
+sourceCompatibility = targetCompatibility = 1.8
+
+compileJava {
+    options.encoding = "UTF-8"
+}
+compileTestJava {
+    options.encoding = "UTF-8"
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    maven { url "http://repo.spring.io/release" }
+}
+
+dependencies {
+
+}
+
+mainClassName = "com.gmail.volodymyrdotsenko.gcp.dataflow.App"
+
+buildDir = 'target'

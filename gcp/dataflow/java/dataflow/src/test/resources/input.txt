@@ -1,0 +1,2 @@
+Hello Apache Beam for GCP Dataflow!
+This the first Apache Beam app, enjoy it!

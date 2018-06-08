@@ -3,3 +3,4 @@
 dataflow.iml
 out/
 target/
+src/test/resources/output*

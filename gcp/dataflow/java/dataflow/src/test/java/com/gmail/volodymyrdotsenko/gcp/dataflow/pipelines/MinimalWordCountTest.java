@@ -1,20 +1,20 @@
 package com.gmail.volodymyrdotsenko.gcp.dataflow.pipelines;
 
 import org.apache.beam.sdk.options.PipelineOptionsFactory;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import java.io.File;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Test {@link MinimalWordCount}
  */
-class MinimalWordCountTest {
+public class MinimalWordCountTest {
 
     @Test
-    void testStart() {
+    public void testStart() {
         String outputDirName = "src/test/resources";
         String outputFilePrefix = "output";
         File outputDir = new File(outputDirName);

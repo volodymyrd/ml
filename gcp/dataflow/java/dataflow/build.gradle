@@ -17,11 +17,17 @@ repositories {
 }
 
 dependencies {
-    compile group: 'org.apache.beam', name: 'beam-sdks-java-core', version: '2.4.0'
-    compile group: 'org.apache.beam', name: 'beam-runners-direct-java', version: '2.4.0'
-    compile group: 'org.apache.beam', name: 'beam-runners-google-cloud-dataflow-java', version: '2.4.0'
+    compile group: 'org.apache.beam', name: 'beam-sdks-java-core', version: '2.6.0-SNAPSHOT'
+    compile group: 'org.apache.beam', name: 'beam-sdks-java-extensions-google-cloud-platform-core', version: '2.6.0-SNAPSHOT'
+    compile group: 'org.apache.beam', name: 'beam-sdks-java-io-google-cloud-platform', version: '2.6.0-SNAPSHOT'
+
+    compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
 
     testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.2.0'
+
+    testCompile group: 'org.apache.beam', name: 'beam-runners-direct-java', version: '2.6.0-SNAPSHOT'
+    //runtime group: 'org.apache.beam', name: 'beam-runners-google-cloud-dataflow-java', version: '2.4.0'
+    runtime group: 'org.slf4j', name: 'slf4j-jdk14', version: '1.7.25'
 }
 
 mainClassName = "com.gmail.volodymyrdotsenko.gcp.dataflow.App"

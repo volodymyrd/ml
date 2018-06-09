@@ -9,7 +9,8 @@ import java.util.Arrays;
  * Main app.
  * <p>
  * Run with gradle:
- * gradle run -PappArgs="['--inputFile=input.txt', '--output=output', '--runner=DataflowRunner']"
+ * gradle run /
+ * -PappArgs="['--inputFile=', '--output=gs://', '--runner=DataflowRunner', '--gcpTempLocation=gs://', '--project=']"
  */
 public class App {
     public static void main(String[] args) {

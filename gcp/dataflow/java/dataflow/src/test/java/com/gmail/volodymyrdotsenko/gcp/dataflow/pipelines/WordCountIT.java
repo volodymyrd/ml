@@ -16,8 +16,8 @@ import java.util.Date;
  */
 public class WordCountIT {
     private static final String DEFAULT_INPUT =
-            //"gs://apache-beam-samples/shakespeare/winterstale-personae";
-            "src/test/resources/input.txt";
+            "gs://apache-beam-samples/shakespeare/winterstale-personae";
+            //"src/test/resources/input.txt";
     private static final String DEFAULT_OUTPUT_CHECKSUM = "ebf895e7324e8a3edc72e7bcc96fa2ba7f690def";
 
     /**

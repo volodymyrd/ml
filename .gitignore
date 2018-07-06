@@ -7,3 +7,5 @@ tensorflow/bazel-out
 tensorflow/bazel-tensorflow
 tensorflow/bazel-testlogs
 tensorflow/resources/
+gcp/dataflow/java/dataflow/input.txt
+tutorial/tensorflow/__pycache__/

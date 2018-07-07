@@ -9,3 +9,4 @@ tensorflow/bazel-testlogs
 tensorflow/resources/
 gcp/dataflow/java/dataflow/input.txt
 tutorial/tensorflow/iris/__pycache__/
+**/events.out*

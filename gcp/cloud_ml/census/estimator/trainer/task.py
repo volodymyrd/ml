@@ -1,3 +1,14 @@
+# get data: gsutil -m cp gs://cloud-samples-data/ml-engine/census/data/* data/
+#
+# Run:
+# TRAIN_DATA=$(pwd)/data/adult.data.csv
+# EVAL_DATA=$(pwd)/data/adult.test.csv
+# MODEL_DIR=output
+# gcloud ml-engine local train --module-name trainer.task --package-path trainer/
+#  --job-dir $MODEL_DIR -- --train-files $TRAIN_DATA --eval-files $EVAL_DATA --train-steps 1000 --eval-steps 100
+
+# tensorboard --logdir=$MODEL_DIR
+
 import argparse
 import os
 

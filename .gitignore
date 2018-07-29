@@ -10,3 +10,14 @@ tensorflow/resources/
 gcp/dataflow/java/dataflow/input.txt
 tutorial/tensorflow/iris/__pycache__/
 **/events.out*
+
+.DS_Store
+gcp/cloud_ml/census/estimator/data/
+gcp/cloud_ml/census/estimator/trainer/__pycache__/
+gcp/cloud_ml/census/estimator/trainer/model.pyc
+gcp/cloud_ml/census/estimator/trainer/__init__.pyc
+
+gcp/cloud_ml/official/
+tutorial/tensorflow/linear_regression/__pycache__/
+utils/.DS_Store
+utils/*.zip

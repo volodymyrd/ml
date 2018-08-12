@@ -10,7 +10,7 @@ def test1():
             'max': [4.2, 4.25, 4.3, 4.2, 4.4, 4.3, 4.35]}
 
     df = pd.DataFrame(data)
-    task.prepare_data(df, 3, 2)
+    print(task.prepare_data(df, 3, 2))
 
 
 def tests():

@@ -1,6 +1,7 @@
 import argparse
 from model1 import model
 import glob
+import itertools
 import os
 import pandas as pd
 
@@ -12,6 +13,21 @@ from tensorflow.contrib.training.python.training import hparam
 import zipfile
 
 THRESHOLD_FOR_OUTLIERS = 2
+
+
+def get_out_put_dir(hidden_units_array):
+    path = ''
+    for unit in hidden_units_array:
+        path += '_' + str(unit)
+    return path
+
+
+def hidden_layers_generator(
+        number_of_layers_min=1, number_of_layers_max=2, number_of_neurons_min=1, number_of_neurons_max=2):
+    for layers in range(number_of_layers_min, number_of_layers_max):
+        for hidden_units in itertools.product(range(number_of_neurons_min, number_of_neurons_max), repeat=layers):
+            hidden_units_list = list(hidden_units)
+            yield hidden_units_list
 
 
 def extract_features_and_labels(df, feature_window, label_window):
@@ -133,6 +149,8 @@ def run_experiment(hparams):
     # estimator = tf.estimator.DNNClassifier(
     #     feature_columns=[],
     #     hidden_units=[1024, 512, 256])
+
+    estimator = tf.estimator.DNNRegressor()
 
 
 if __name__ == '__main__':

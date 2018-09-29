@@ -97,6 +97,8 @@ def prepare_data(df, feature_window, label_window):
 
     df_rows = df.shape[0]
 
+    print('preparing data for {} rows...'.format(df_rows))
+
     train = extract_features_and_labels(df[:df_rows - 1], feature_window, label_window)
 
     test = extract_features_and_labels(df[df_rows - (feature_window + label_window):],
@@ -142,15 +144,18 @@ def run_experiment(hparams):
 
     df = data_pre_processing(data_file_name, hparams.path_to_archives, hparams.path_to_data_dir)
 
-    train, test = prepare_data(df, hparams.feature_window, hparams.label_window)
+    rows = df.shape[0]
 
-    print(test)
+    train, test = prepare_data(df[rows - 100:rows], hparams.feature_window, hparams.label_window)
+
+    print("train:{}".format(train))
+    print("test:{}".format(test))
     # my_feature_columns = [tf.feature_column.numeric_column('f')]
     # estimator = tf.estimator.DNNClassifier(
     #     feature_columns=[],
     #     hidden_units=[1024, 512, 256])
 
-    estimator = tf.estimator.DNNRegressor()
+    # estimator = tf.estimator.DNNRegressor()
 
 
 if __name__ == '__main__':

@@ -409,7 +409,7 @@ if __name__ == '__main__':
     parser.add_argument(
         '--start_checkpoint',
         type=str,
-        default='/Users/vova/work/asr/speech_commands_train/conv.ckpt-4000',
+        default='/Users/vova/work/asr/speech_commands_train/conv.ckpt-4100',
         help='If specified, restore this pretrained model before any training.')
     parser.add_argument(
         '--model_architecture',

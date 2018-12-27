@@ -183,7 +183,7 @@ class AudioProcessor(object):
                  model_settings, summaries_dir):
         if data_dir:
             self.data_dir = data_dir
-            # self.maybe_download_and_extract_dataset(data_url, data_dir)
+            self.maybe_download_and_extract_dataset(data_url, data_dir)
             self.prepare_data_index(silence_percentage, unknown_percentage,
                                     wanted_words, validation_percentage,
                                     testing_percentage)
@@ -209,26 +209,26 @@ class AudioProcessor(object):
             os.makedirs(dest_directory)
         filename = data_url.split('/')[-1]
         filepath = os.path.join(dest_directory, filename)
-        if not os.path.exists(filepath):
-
-            def _progress(count, block_size, total_size):
-                sys.stdout.write(
-                    '\r>> Downloading %s %.1f%%' %
-                    (filename, float(count * block_size) / float(total_size) * 100.0))
-                sys.stdout.flush()
-
-            try:
-                filepath, _ = urllib.request.urlretrieve(data_url, filepath, _progress)
-            except:
-                tf.logging.error('Failed to download URL: %s to folder: %s', data_url,
-                                 filepath)
-                tf.logging.error('Please make sure you have enough free space and'
-                                 ' an internet connection')
-                raise
-            print()
-            statinfo = os.stat(filepath)
-            tf.logging.info('Successfully downloaded %s (%d bytes)', filename,
-                            statinfo.st_size)
+        # if not os.path.exists(filepath):
+        #
+        #     def _progress(count, block_size, total_size):
+        #         sys.stdout.write(
+        #             '\r>> Downloading %s %.1f%%' %
+        #             (filename, float(count * block_size) / float(total_size) * 100.0))
+        #         sys.stdout.flush()
+        #
+        #     try:
+        #         filepath, _ = urllib.request.urlretrieve(data_url, filepath, _progress)
+        #     except:
+        #         tf.logging.error('Failed to download URL: %s to folder: %s', data_url,
+        #                          filepath)
+        #         tf.logging.error('Please make sure you have enough free space and'
+        #                          ' an internet connection')
+        #         raise
+        #     print()
+        #     statinfo = os.stat(filepath)
+        #     tf.logging.info('Successfully downloaded %s (%d bytes)', filename,
+        #                     statinfo.st_size)
         tarfile.open(filepath, 'r:gz').extractall(dest_directory)
 
     def prepare_data_index(self, silence_percentage, unknown_percentage,

@@ -1,4 +1,19 @@
+# Copyright 2017 The TensorFlow Authors. All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ==============================================================================
 """Model definitions for simple speech recognition.
+
 """
 from __future__ import absolute_import
 from __future__ import division
@@ -33,8 +48,10 @@ RANDOM_SEED = 59185
 
 def prepare_words_list(wanted_words):
     """Prepends common tokens to the custom word list.
+
     Args:
       wanted_words: List of strings containing the custom words.
+
     Returns:
       List with the standard silence and unknown tokens added.
     """
@@ -43,20 +60,24 @@ def prepare_words_list(wanted_words):
 
 def which_set(filename, validation_percentage, testing_percentage):
     """Determines which data partition the file should belong to.
+
     We want to keep files in the same training, validation, or testing sets even
     if new ones are added over time. This makes it less likely that testing
     samples will accidentally be reused in training when long runs are restarted
     for example. To keep this stability, a hash of the filename is taken and used
     to determine which set it should belong to. This determination only depends on
     the name and the set proportions, so it won't change as other files are added.
+
     It's also useful to associate particular files as related (for example words
     spoken by the same person), so anything after '_nohash_' in a filename is
     ignored for set determination. This ensures that 'bobby_nohash_0.wav' and
     'bobby_nohash_1.wav' are always in the same set, for example.
+
     Args:
       filename: File path of the data sample.
       validation_percentage: How much of the data set to use for validation.
       testing_percentage: How much of the data set to use for testing.
+
     Returns:
       String, one of 'training', 'validation', or 'testing'.
     """
@@ -87,8 +108,10 @@ def which_set(filename, validation_percentage, testing_percentage):
 
 def load_wav_file(filename):
     """Loads an audio file and returns a float PCM-encoded array of samples.
+
     Args:
       filename: Path to the .wav file to load.
+
     Returns:
       Numpy array holding the sample data as floats between -1.0 and 1.0.
     """
@@ -103,6 +126,7 @@ def load_wav_file(filename):
 
 def save_wav_file(filename, wav_data, sample_rate):
     """Saves audio sample data to a .wav audio file.
+
     Args:
       filename: Path to save the file to.
       wav_data: 2D array of float PCM-encoded audio data.
@@ -124,27 +148,57 @@ def save_wav_file(filename, wav_data, sample_rate):
             })
 
 
+def get_features_range(model_settings):
+    """Returns the expected min/max for generated features.
+
+    Args:
+      model_settings: Information about the current model being trained.
+
+    Returns:
+      Min/max float pair holding the range of features.
+
+    Raises:
+      Exception: If preprocessing mode isn't recognized.
+    """
+    # TODO(petewarden): These values have been derived from the observed ranges
+    # of spectrogram and MFCC inputs. If the preprocessing pipeline changes,
+    # they may need to be updated.
+    if model_settings['preprocess'] == 'average':
+        features_min = 0.0
+        features_max = 127.5
+    elif model_settings['preprocess'] == 'mfcc':
+        features_min = -247.0
+        features_max = 30.0
+    else:
+        raise Exception('Unknown preprocess mode "%s" (should be "mfcc" or'
+                        ' "average")' % (model_settings['preprocess']))
+    return features_min, features_max
+
+
 class AudioProcessor(object):
     """Handles loading, partitioning, and preparing audio training data."""
 
     def __init__(self, data_url, data_dir, silence_percentage, unknown_percentage,
                  wanted_words, validation_percentage, testing_percentage,
                  model_settings, summaries_dir):
-        self.data_dir = data_dir
-        # self.maybe_download_and_extract_dataset(data_url, data_dir)
-        self.prepare_data_index(silence_percentage, unknown_percentage,
-                                wanted_words, validation_percentage,
-                                testing_percentage)
-        self.prepare_background_data()
+        if data_dir:
+            self.data_dir = data_dir
+            self.maybe_download_and_extract_dataset(data_url, data_dir)
+            self.prepare_data_index(silence_percentage, unknown_percentage,
+                                    wanted_words, validation_percentage,
+                                    testing_percentage)
+            self.prepare_background_data()
         self.prepare_processing_graph(model_settings, summaries_dir)
 
     def maybe_download_and_extract_dataset(self, data_url, dest_directory):
         """Download and extract data set tar file.
+
         If the data set we're using doesn't already exist, this function
         downloads it from the TensorFlow.org website and unpacks it into a
         directory.
         If the data_url is none, don't download anything and expect the data
         directory to contain the correct files already.
+
         Args:
           data_url: Web location of the tar file containing the data set.
           dest_directory: File path to extract data to.
@@ -181,21 +235,25 @@ class AudioProcessor(object):
                            wanted_words, validation_percentage,
                            testing_percentage):
         """Prepares a list of the samples organized by set and label.
+
         The training loop needs a list of all the available data, organized by
         which partition it should belong to, and with ground truth labels attached.
         This function analyzes the folders below the `data_dir`, figures out the
         right
         labels for each file based on the name of the subdirectory it belongs to,
         and uses a stable hash to assign it to a data set partition.
+
         Args:
           silence_percentage: How much of the resulting data should be background.
           unknown_percentage: How much should be audio outside the wanted classes.
           wanted_words: Labels of the classes we want to be able to recognize.
           validation_percentage: How much of the data set to use for validation.
           testing_percentage: How much of the data set to use for testing.
+
         Returns:
           Dictionary containing a list of file information for each set partition,
           and a lookup map for each class to determine its numeric index.
+
         Raises:
           Exception: If expected files are not found.
         """
@@ -261,15 +319,19 @@ class AudioProcessor(object):
 
     def prepare_background_data(self):
         """Searches a folder for background noise audio, and loads it into memory.
+
         It's expected that the background audio samples will be in a subdirectory
         named '_background_noise_' inside the 'data_dir' folder, as .wavs that match
         the sample rate of the training data, but can be much longer in duration.
+
         If the '_background_noise_' folder doesn't exist at all, this isn't an
         error, it's just taken to mean that no background noise augmentation should
         be used. If the folder does exist, but it's empty, that's treated as an
         error.
+
         Returns:
           List of raw PCM-encoded audio samples of background noise.
+
         Raises:
           Exception: If files aren't found in the folder.
         """
@@ -293,11 +355,14 @@ class AudioProcessor(object):
 
     def prepare_processing_graph(self, model_settings, summaries_dir):
         """Builds a TensorFlow graph to apply the input distortions.
+
         Creates a graph that loads a WAVE file, decodes it, scales the volume,
         shifts it in time, adds in background noise, calculates a spectrogram, and
         then builds an MFCC fingerprint from that.
+
         This must be called with an active TensorFlow session running, and it
         creates multiple placeholder inputs, and one output:
+
           - wav_filename_placeholder_: Filename of the WAV to load.
           - foreground_volume_placeholder_: How loud the main clip should be.
           - time_shift_padding_placeholder_: Where to pad the clip.
@@ -305,9 +370,11 @@ class AudioProcessor(object):
           - background_data_placeholder_: PCM sample data for background noise.
           - background_volume_placeholder_: Loudness of mixed-in background.
           - output_: Output 2D fingerprint of processed audio.
+
         Args:
           model_settings: Information about the current model being trained.
           summaries_dir: Path to save training summary information to.
+
         Raises:
           ValueError: If the preprocessing mode isn't recognized.
         """
@@ -382,13 +449,16 @@ class AudioProcessor(object):
             # Merge all the summaries and write them out to /tmp/retrain_logs (by
             # default)
             self.merged_summaries_ = tf.summary.merge_all(scope='data')
-            self.summary_writer_ = tf.summary.FileWriter(summaries_dir + '/data',
-                                                         tf.get_default_graph())
+            if summaries_dir:
+                self.summary_writer_ = tf.summary.FileWriter(summaries_dir + '/data',
+                                                             tf.get_default_graph())
 
     def set_size(self, mode):
         """Calculates the number of samples in the dataset partition.
+
         Args:
           mode: Which partition, must be 'training', 'validation', or 'testing'.
+
         Returns:
           Number of samples in the partition.
         """
@@ -397,9 +467,11 @@ class AudioProcessor(object):
     def get_data(self, how_many, offset, model_settings, background_frequency,
                  background_volume_range, time_shift, mode, sess):
         """Gather samples from the data set, applying transformations as needed.
+
         When the mode is 'training', a random selection of samples will be returned,
         otherwise the first N clips in the partition will be used. This ensures that
         validation always uses the same samples, reducing noise in the metrics.
+
         Args:
           how_many: Desired number of samples to return. -1 means the entire
             contents of this partition.
@@ -412,8 +484,10 @@ class AudioProcessor(object):
           mode: Which partition to use, must be 'training', 'validation', or
             'testing'.
           sess: TensorFlow session that was active when processor was created.
+
         Returns:
           List of sample data for the transformed samples, and list of label indexes
+
         Raises:
           ValueError: If background samples are too short.
         """
@@ -493,14 +567,44 @@ class AudioProcessor(object):
             labels[i - offset] = label_index
         return data, labels
 
+    def get_features_for_wav(self, wav_filename, model_settings, sess):
+        """Applies the feature transformation process to the input_wav.
+
+        Runs the feature generation process (generally producing a spectrogram from
+        the input samples) on the WAV file. This can be useful for testing and
+        verifying implementations being run on other platforms.
+
+        Args:
+          wav_filename: The path to the input audio file.
+          model_settings: Information about the current model being trained.
+          sess: TensorFlow session that was active when processor was created.
+
+        Returns:
+          Numpy data array containing the generated features.
+        """
+        desired_samples = model_settings['desired_samples']
+        input_dict = {
+            self.wav_filename_placeholder_: wav_filename,
+            self.time_shift_padding_placeholder_: [[0, 0], [0, 0]],
+            self.time_shift_offset_placeholder_: [0, 0],
+            self.background_data_placeholder_: np.zeros([desired_samples, 1]),
+            self.background_volume_placeholder_: 0,
+            self.foreground_volume_placeholder_: 1,
+        }
+        # Run the graph to produce the output audio.
+        data_tensor = sess.run([self.output_], feed_dict=input_dict)
+        return data_tensor
+
     def get_unprocessed_data(self, how_many, model_settings, mode):
         """Retrieve sample data for the given partition, with no transformations.
+
         Args:
           how_many: Desired number of samples to return. -1 means the entire
             contents of this partition.
           model_settings: Information about the current model being trained.
           mode: Which partition to use, must be 'training', 'validation', or
             'testing'.
+
         Returns:
           List of sample data for the samples, and list of labels in one-hot form.
         """
